@@ -6,6 +6,19 @@ const User = db.sequelize.models.User;
 const app = express();
 
 app.get('/users/:userId/products', (req, res) => {
+  const userId = req.params.userId;
+  User
+    .findByPk(userId)
+    .then(user => {
+      if (!user) {
+        res.status(404).json('User not found!');
+      } else {
+        user.getProducts()
+          .then(products => res.status(200).json(products))
+          .catch(err => console.error(err));
+      }
+    })
+    .catch(err => console.error(err));
 });
 
 let connectedUser;
